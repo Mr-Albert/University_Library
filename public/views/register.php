@@ -2,14 +2,23 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Login</title>
+<title>Register</title>
 <link rel="stylesheet" href="/UNIVERSITY_LIBRARY/public/css/login.css" />
 
 </head>
 <body>
 <?php
+if(!isset($_SESSION)) 
+ { 
+     session_start(); 
+ } 
+if(isset($_SESSION["username"])){
+        session_start();
+
+        header("Location: /UNIVERSITY_LIBRARY/index.php");
+}
+
 require('database/db.php');
-session_start();
 // If form submitted, insert values into the database.
 if (isset($_POST['userName'])){
 	$userName = stripslashes($_REQUEST['userName']);
@@ -73,7 +82,7 @@ if (isset($_POST['userName'])){
 
     <!-- Remind Passowrd -->
     <div id="formFooter">
-      <a class="underlineHover" href="#">Forgot Password?</a>
+      <a class="underlineHover" href="/UNIVERSITY_LIBRARY/public/views/login.php">Back to login</a>
     </div>
 
   </div>

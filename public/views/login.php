@@ -54,7 +54,7 @@ if (isset($_POST['username'])){
 
     <!-- Remind Passowrd -->
     <div id="formFooter">
-      <a class="underlineHover" href="#">Forgot Password?</a>
+    <a class="underlineHover" href="/UNIVERSITY_LIBRARY/public/views/register.php">Request Account?</a>
     </div>
 
   </div>

@@ -1,12 +1,17 @@
+
+<?php
+//include auth.php file on all secure pages
+include("./app/controllers/auth.php");
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="side_nav.css">
 
 </head>
 <body>
 
-<?php require('side_navigation.php'); ?>
+<?php require('./public/views/top_navigation.php'); ?>
+<?php require('./public/views/side_navigation.php'); ?>
 </body>
 </html> 

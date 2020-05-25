@@ -46,24 +46,49 @@ let data = Object.keys(books[0]);
 //this is afunction that should generate buttons, it is still not complete
 function functional_cell(ID)
 {
-	let first_button="<button id='first_"+ID+"' onclick='firstButtonHandler("+ID+")''>";
-	let second_button="<button id='sec_"+ID+"' onclick='firstButtonHandler("+ID+")''>";
+	let first_button="<button id='delete_user_"+ID+"' onclick='delete_user("+ID+")''>";
+	let second_button="<select multipleselect id='change_groups_"+ID+"' onchange='changeGroups("+ID+")''>";
   return [first_button,second_button];
 	
+}
+
+function delete_user(ID)
+{
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        alert(responseText);
+      }
+    };
+    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=delete_user&q=" + ID, true);
+    xmlhttp.send();
+    
+}
+function onLoad()
+{
+  var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        alert(responseText);
+      }
+    };
+    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=get_users", true);
+    xmlhttp.send();
+    
 }
 
 </script>
 
 
 </head>
-<body>
+<body onload="onLoad()">
 <?php require('public/views/top_navigation.php'); ?>
 <?php require('public/views/side_navigation.php'); ?>
 
 
 <div class="table-responsive">
 <table id="users_table" class="table table-hover">
-  
 </table>
 </div>
 

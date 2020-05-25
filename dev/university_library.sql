@@ -28,13 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `books` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ISBN` varchar(100) NOT NULL,
   `publication_year` date NOT NULL,
   `author` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `available_copies` int(11) NOT NULL
+  `available_copies` int(11) NOT NULL,
+  primary key (id)
+  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -44,9 +46,10 @@ CREATE TABLE `books` (
 --
 
 CREATE TABLE `groups` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -56,9 +59,14 @@ CREATE TABLE `groups` (
 --
 
 CREATE TABLE `groups_permissions` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `permission_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL
+  `group_id` int(11) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (permission_id) REFERENCES permissions(id),
+    FOREIGN KEY (group_id) REFERENCES groups(id)
+
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -68,8 +76,12 @@ CREATE TABLE `groups_permissions` (
 --
 
 CREATE TABLE `permissions` (
-  `id` int(11) NOT NULL,
-  `permission_name` varchar(255) NOT NULL
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+    PRIMARY KEY (id)
+
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -79,7 +91,7 @@ CREATE TABLE `permissions` (
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -87,7 +99,9 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT current_timestamp(),
   `last_login` datetime DEFAULT NULL,
   `approved` tinyint(1) DEFAULT 0,
-  `email` varchar(100) DEFAULT NULL
+  `email` varchar(100) DEFAULT NULL,
+    PRIMARY KEY (id)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -107,9 +121,15 @@ INSERT INTO `users` (`id`, `user_name`, `first_name`, `last_name`, `PASSWORD`, `
 --
 
 CREATE TABLE `users_borrow_books` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL
+  `book_id` int(11) NOT NULL,
+  `borrow_date` DATETIME NOT NULL DEFAULT current_timestamp(),
+  `borrow_period` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (book_id) REFERENCES books(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -119,139 +139,13 @@ CREATE TABLE `users_borrow_books` (
 --
 
 CREATE TABLE `users_groups` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (group_id) REFERENCES groups(id)
+
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `books`
---
-ALTER TABLE `books`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `ISBN` (`ISBN`);
-
---
--- Indexes for table `groups`
---
-ALTER TABLE `groups`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `group_name` (`group_name`);
-
---
--- Indexes for table `groups_permissions`
---
-ALTER TABLE `groups_permissions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `permission_id` (`permission_id`),
-  ADD KEY `group_id` (`group_id`);
-
---
--- Indexes for table `permissions`
---
-ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `permission_name` (`permission_name`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_name` (`user_name`);
-
---
--- Indexes for table `users_borrow_books`
---
-ALTER TABLE `users_borrow_books`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `book_id` (`book_id`);
-
---
--- Indexes for table `users_groups`
---
-ALTER TABLE `users_groups`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `group_id` (`group_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `books`
---
-ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `groups`
---
-ALTER TABLE `groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `groups_permissions`
---
-ALTER TABLE `groups_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `permissions`
---
-ALTER TABLE `permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `users_borrow_books`
---
-ALTER TABLE `users_borrow_books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users_groups`
---
-ALTER TABLE `users_groups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `groups_permissions`
---
-ALTER TABLE `groups_permissions`
-  ADD CONSTRAINT `groups_permissions_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`),
-  ADD CONSTRAINT `groups_permissions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
-
---
--- Constraints for table `users_borrow_books`
---
-ALTER TABLE `users_borrow_books`
-  ADD CONSTRAINT `users_borrow_books_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `users_borrow_books_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
-
---
--- Constraints for table `users_groups`
---
-ALTER TABLE `users_groups`
-  ADD CONSTRAINT `users_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `users_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

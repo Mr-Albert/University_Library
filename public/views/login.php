@@ -22,8 +22,23 @@ if (isset($_POST['username'])){
   $q_ptr = $conn->query($query);
   $rows_num= $q_ptr->fetchAll(PDO::FETCH_NUM)[0][0];
   if($rows_num==1){
-	    $_SESSION['username'] = $username;
-            // Redirect user to index.php
+    $_SESSION['username'] = $username;
+
+    $permissions_query = "
+    select permission_name from permissions where permissions.id in (
+    select permission_id  from groups_permissions where groups_permissions.group_id in (
+    select group_id from users_groups where users_groups.user_id =(
+    select id from users where user_name='".$username."')
+    )
+    )";
+    $q_ptr = $conn->query($permissions_query);
+    $rows= $q_ptr->fetchAll(PDO::FETCH_NUM);
+    $_SESSION['permissions']=array();
+    foreach ($rows as $row)
+    {
+      $_SESSION['permissions'][]=$row[0];
+    }
+    // Redirect user to index.php
 	    header("Location: /UNIVERSITY_LIBRARY/index.php");
          }else{
 	echo "<div class='form'>

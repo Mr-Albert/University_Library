@@ -12,17 +12,16 @@ exit();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script>
-    
 function generateTableHead(table, data) {
   let thead = table.createTHead();
   let row = thead.insertRow();
-  for (let key of data) {
+  Object.keys(data[0]).forEach(function(key) {
     let th = document.createElement("th");
     th.setAttribute("scope","col");
     let text = document.createTextNode(key);
     th.appendChild(text);
     row.appendChild(th);
-  }
+  });
 }
 
 function generateTable(table, data,functor) {
@@ -35,42 +34,52 @@ let tbody = table.createTBody();
       let text = document.createTextNode(element[key]);
       cell.appendChild(text);
     }
-    let elems=functor("2");
-    console.log(elems);
+    let extra_elements=functor(element);
+    extra_elements.forEach(element => {
+        let cell = row.insertCell();
+        cell.setAttribute("scope","row");
+        cell.innerHTML=element;
+    });
   }
 }
 
 let table = document.querySelector("table");
-let data = Object.keys(books[0]);
-
 //this is afunction that should generate buttons, it is still not complete
-function functional_cell(ID)
+function functional_cell(element)
 {
-	let first_button="<button id='delete_user_"+ID+"' onclick='delete_user("+ID+")''>";
-	let second_button="<select multipleselect id='change_groups_"+ID+"' onchange='changeGroups("+ID+")''>";
-  return [first_button,second_button];
+	let borrow_button="<div><button class= 'btn btn-danger' id='remove_user"+element["id"]+"' onclick='remove_user("+element["id"]+")'>Delete User</button></div>";
+    return [borrow_button];
 	
 }
 
-function delete_user(ID)
+function remove_user(ID)
 {
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        alert(responseText);
+        // console.log(this.responseText);
+        onLoad();
       }
     };
-    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=delete_user&q=" + ID, true);
+    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=delete_user&user_id=" + ID, true);
     xmlhttp.send();
     
 }
+
+
 function onLoad()
 {
   var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        alert(responseText);
+    xmlhttp.onreadystatechange = function(caller) {
+       if (this.readyState == 4 && this.status == 200 &&this.responseText!=[]) {
+           let json_data = JSON.parse(this.responseText);
+           console.log(json_data);
+           let table =document.getElementById("users_table");
+           table.innerHTML="";
+           generateTableHead(table,json_data);
+           generateTable(table,json_data,functional_cell);
+
       }
     };
     xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=get_users", true);

@@ -10,14 +10,15 @@
   <?php } ?>
 
   <?php if(in_array("groups.php",$_SESSION['permissions'])){?>
-  <a href="/UNIVERSITY_LIBRARY/public/views/groupss.php">Groups</a>
+  <a href="/UNIVERSITY_LIBRARY/public/views/groups.php">Groups</a>
   <?php } ?>
 
   <?php if(in_array("permissions.php",$_SESSION['permissions'])){?>
-  <a href="/UNIVERSITY_LIBRARY/public/views/permissions.php">Users</a>
+  <a href="/UNIVERSITY_LIBRARY/public/views/permissions.php">Permissions</a>
   <?php } ?>
 
-  <a href="/UNIVERSITY_LIBRARY/public/views/books.php">Books</a>
+  <a href="/UNIVERSITY_LIBRARY/public/views/library.php">Library</a>
+  <a href="/UNIVERSITY_LIBRARY/public/views/borrowed_books.php">Borrowed Books</a>
   
   <?php if(in_array("reg_reqs.php",$_SESSION['permissions'])){?>
   <a href="/UNIVERSITY_LIBRARY/public/views/reg_reqs.php">Registration requests</a>

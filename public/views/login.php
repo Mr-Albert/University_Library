@@ -17,12 +17,15 @@ if (isset($_POST['username'])){
   //escapes special characters in a string
 	$password = stripslashes($_REQUEST['password']);
 	//Checking is user existing in the database or not
-  $query = "SELECT count(*) FROM `users` WHERE user_name='$username'
+  $query = "SELECT count(*),id FROM `users` WHERE user_name='$username'
   and password='".md5($password)."' and approved=1";
   $q_ptr = $conn->query($query);
-  $rows_num= $q_ptr->fetchAll(PDO::FETCH_NUM)[0][0];
+  [$rows_num,$user_id]= $q_ptr->fetchAll(PDO::FETCH_NUM)[0];
   if($rows_num==1){
+    $query = "update `users` set last_login=current_timestamp() WHERE user_name='$username'";
+    $q_ptr = $conn->query($query);
     $_SESSION['username'] = $username;
+    $_SESSION['userID'] = $user_id;
 
     $permissions_query = "
     select permission_name from permissions where permissions.id in (

@@ -12,6 +12,5 @@ include("./app/controllers/auth.php");
 <body>
 
 <?php require('./public/views/top_navigation.php'); ?>
-<?php require('./public/views/side_navigation.php'); ?>
-</body>
+ </body>
 </html> 

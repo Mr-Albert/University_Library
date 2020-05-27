@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Register</title>
 <link rel="stylesheet" href="/UNIVERSITY_LIBRARY/public/css/login.css" />
+<link href="/UNIVERSITY_LIBRARY/public/libs/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
 
 </head>
 <body>
@@ -33,8 +34,10 @@ if (isset($_POST['userName'])){
                 $query = "insert into `users` (user_name,password,email,first_name,last_name) values ('".$userName."',md5('".$password."'),'".$email."','".$firstName."','".$lastName."'".")";
                 $q_ptr = $conn->query($query);
                 //handle errors here <>
-                echo "<div class='message'>
-                <h3>Request submitted and pending approval.</h3>";
+                // echo "<div class='message'>
+                // <h3>Request submitted and pending approval.</h3>";
+                header("Location: /UNIVERSITY_LIBRARY/public/views/login.php");
+
         }
         else {
                 echo "<div class='form'>
@@ -61,26 +64,22 @@ if (isset($_POST['userName'])){
 </script>
 <div class="wrapper fadeInDown">
   <div id="formContent">
-    <!-- Tabs Titles -->
 
     <!-- Icon -->
     <div class="fadeIn first">
-      <img src="public/assets/user_icon.svg" id="icon" alt="User Icon" />
+         <i class="fas fa-user"></i>  
     </div>
 
-    <!-- Login Form -->
     <form  action="" method="post" name="registration">
-    <input type="text" name="userName" class="fadeIn second" placeholder="User Name" required />
-    <input type="text" name="firstName" class="fadeIn second" placeholder="First Name" required />
-    <input type="text" name="lastName" class="fadeIn second" placeholder="Last Name" required />
-    <input type="email" name="email" placeholder="Email" required />
-    <input id= "password" type="password" name="password" class="fadeIn third" placeholder="Password" onchange="validatePassword()" required />
-    <input id="password_confirm" type="password" name="password_confirm" class="fadeIn third" placeholder="confirm password" onchange="validatePassword()" required />
-    <input type="submit" name="submit" value="Register" />
-
+        <input type="text" name="userName" class="fadeIn second" placeholder="User Name" required />
+        <input type="text" name="firstName" class="fadeIn second" placeholder="First Name" required />
+        <input type="text" name="lastName" class="fadeIn second" placeholder="Last Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input id= "password" type="password" name="password" class="fadeIn third" placeholder="Password" onchange="validatePassword()" required />
+        <input id="password_confirm" type="password" name="password_confirm" class="fadeIn third" placeholder="confirm password" onchange="validatePassword()" required />
+        <input type="submit" name="submit" value="Register" />
     </form>
 
-    <!-- Remind Passowrd -->
     <div id="formFooter">
       <a class="underlineHover" href="/UNIVERSITY_LIBRARY/public/views/login.php">Back to login</a>
     </div>

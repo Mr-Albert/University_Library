@@ -22,3 +22,8 @@
     background-color: #4CAF50;
     color: white;
   }
+  body {
+    background-image: url("/UNIVERSITY_LIBRARY/public/assets/library_background.jpg");
+    background-size: contain;
+
+  }

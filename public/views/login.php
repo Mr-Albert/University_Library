@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Login</title>
 <link rel="stylesheet" href="/UNIVERSITY_LIBRARY/public/css/login.css" />
+<link href="/UNIVERSITY_LIBRARY/public/libs/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
 
 </head>
 <body>
@@ -43,10 +44,9 @@ if (isset($_POST['username'])){
     }
     // Redirect user to index.php
 	    header("Location: /UNIVERSITY_LIBRARY/index.php");
-         }else{
-	echo "<div class='form'>
-<h3>Username/password is incorrect.</h3>
-<br/>Click here to <a href='login.php'>Login</a></div>";
+         }
+      else{
+        header("Location: login.php?wrong_credentials=true");
 	}
     }else{
 ?>
@@ -60,7 +60,11 @@ if (isset($_POST['username'])){
 
     <!-- Icon -->
     <div class="fadeIn first">
-      <img src="public/assets/user_icon.svg" id="icon" alt="User Icon" />
+      <!-- <img src="public/assets/user_icon.svg" id="icon" alt="User Icon" /> -->
+      <i class="fas fa-user"></i>  
+      <?php if(isset($_GET["wrong_credentials"]) &&$_GET["wrong_credentials"]=="true") {?>
+      <h style="color:red"> Wrong credentials<h>
+      <?php }?>
     </div>
 
     <!-- Login Form -->

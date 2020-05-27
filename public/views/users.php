@@ -93,11 +93,10 @@ function onLoad()
 </head>
 <body onload="onLoad()">
 <?php require('public/views/top_navigation.php'); ?>
-<?php require('public/views/side_navigation.php'); ?>
-
+ 
 
 <div class="table-responsive">
-<table id="users_table" class="table table-hover">
+<table id="users_table" class="table table-hover table-dark">
 </table>
 </div>
 

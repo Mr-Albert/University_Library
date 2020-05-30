@@ -90,12 +90,22 @@ function onLoad()
   var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function(caller) {
        if (this.readyState == 4 && this.status == 200 &&this.responseText!=[]) {
+        if(!this.responseText||this.responseText.length===2)
+         {
+          let table =document.getElementById("users_table");
+          table.innerHTML="";
+          $("body").append("<div id='no_reqs_dev' class='alert alert-primary' role='alert'>There aren't any new requests! </div>");
+           
+         }
+         else
+         {
            let json_data = JSON.parse(this.responseText);
            console.log(json_data);
            let table =document.getElementById("users_table");
            table.innerHTML="";
            generateTableHead(table,json_data);
            generateTable(table,json_data,functional_cell);
+         }
 
       }
     };

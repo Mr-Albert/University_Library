@@ -38,6 +38,7 @@ require('database/db.php');
     case "borrow_book":
         $query = "insert into users_borrow_books (user_id,book_id,borrow_period) values (".$_SESSION["userID"].",".$_GET["book_id"].",".$_GET["borrow_period"].");
         update books set available_copies = (select available_copies from books where id=".$_GET["book_id"].")-1 where id=".$_GET["book_id"];
+        echo $query;
         try {
             $q_ptr = $conn->exec($query);
             echo "SUCCESS";

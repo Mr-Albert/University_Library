@@ -12,17 +12,38 @@ exit();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script>
+    
 function generateTableHead(table, data) {
   let thead = table.createTHead();
-    thead.innerHTML="    <tr>\
-      <th>Group Name</th>\
-      <th>Description</th>\
-      <th>Users</th>\
-      <th>Permissions</th>\
-    </tr>";
-
+  let row = thead.insertRow();
+//   console.log(data[0]);
+  Object.keys(data[0]).forEach(function(key) {
+    let th = document.createElement("th");
+    th.setAttribute("scope","col");
+    let text = document.createTextNode(key);
+    th.appendChild(text);
+    row.appendChild(th);
+  });
 }
 
+function generateTable(table, data,functor) {
+let tbody = table.createTBody();
+  for (let element of data) {
+    let row = tbody.insertRow();
+    for (var key in element) {
+      let cell = row.insertCell();
+      cell.setAttribute("scope","row");
+      let text = document.createTextNode(element[key]);
+      cell.appendChild(text);
+    }
+    let extra_elements=functor(element);
+    extra_elements.forEach(element => {
+        let cell = row.insertCell();
+        cell.setAttribute("scope","row");
+        cell.innerHTML=element;
+    });
+  }
+}
 function remove_users_from_group(group_id,user_id)
 {
     
@@ -50,68 +71,12 @@ function remove_permission_from_group(group_id,permission_id)
     // xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/groups.php?srv_type=remove_permission_from_group&permission_id=" + permission_id+"&group_id="+group_id, true);
     // xmlhttp.send();
 }
-
-
-function generateTable(table, data,functor) {
-let tbody = table.createTBody();
-  for (let element of data) {
-      console.log(element[Object.keys(element)[0]]);
-      var json_object=element[Object.keys(element)[0]];
-      let row = tbody.insertRow();
-      Object.keys(json_object).forEach(function(key) {
-
-            let cell = row.insertCell();
-            cell.setAttribute("scope","row");
-            if (key=="users")
-            {
-                let users_panel="";
-                for (let user of json_object[key]) {
-                    users_panel+="<div style='display:inline-block;margin:0.25em' class='alert alert-success' role='alert'> \
-                    <span style='cursor: pointer;position: absolute;top: 50%;right: 0%;padding: 2px 16px;transform: translate(0%, -50%);   width: 4px;\
-                    ' class='close' onclick='remove_users_from_group("+Object.keys(element)[0]+","+user["user_id"]+")'>x</span>"+user["user_name"]+"</div>"
-
-                }
-
-                cell.innerHTML=users_panel;
-            }
-            else if (key=="permissions")
-            {
-                let permission_panel="";
-                for (let permission of json_object[key]) {
-                    permission_panel+="<div style='display:inline-block;margin:0.25em' class='alert alert-success' role='alert'>\
-                    <span style='cursor: pointer;position: absolute;top: 50%;right: 0%;padding: 2px 16px;transform: translate(0%, -50%);   width: 4px;\
-                    ' class='close' onclick='remove_permission_from_group("+Object.keys(element)[0]+","+permission["permission_id"]+")'>x</span>"+permission["permission_name"]+"</div>"
-                }
-
-                cell.innerHTML=permission_panel;
-            }
-            else{
-                let text = document.createTextNode(json_object[key]);
-                cell.appendChild(text);
-            }
-         })
-
-    // let row = tbody.insertRow();
-    // for (var key in element) {
-    //   let cell = row.insertCell();
-    //   cell.setAttribute("scope","row");
-    //   let text = document.createTextNode(element[key]);
-    //   cell.appendChild(text);
-    // }
-    // let extra_elements=functor(element);
-    // extra_elements.forEach(element => {
-    //     let cell = row.insertCell();
-    //     cell.setAttribute("scope","row");
-    //     cell.innerHTML=element;
-    // });
-  }
-}
-
+ 
 let table = document.querySelector("table");
 //this is afunction that should generate buttons, it is still not complete
 function functional_cell(element)
 {
-	let borrow_button="<div><button id='remove_user"+element["id"]+"' onclick='remove_user("+element["id"]+")'>Delete User</button></div>";
+	let borrow_button="<div><button id='remove_user"+element["id"]+"' class='btn btn-danger' onclick='remove_user("+element["user_id"]+")'>Delete User</button></div>";
     return [borrow_button];
 	
 }
@@ -138,11 +103,16 @@ function onLoad()
     xmlhttp.onreadystatechange = function(caller) {
        if (this.readyState == 4 && this.status == 200 &&this.responseText!=[]) {
            let json_data = JSON.parse(this.responseText);
-           console.log(json_data);
-           let table =document.getElementById("books_table");
-           table.innerHTML="";
-           generateTableHead(table,json_data);
-           generateTable(table,json_data,functional_cell);
+           //users table
+           let table =document.getElementById("users_table");
+           table.innerHTML="<caption class='alert alert-light'>List of users</caption>";
+           generateTableHead(table,json_data["users"]);
+           generateTable(table,json_data["users"],functional_cell);
+           //admins table
+           let admins_table =document.getElementById("admins_table");
+           admins_table.innerHTML="<caption class='alert alert-light'>List of admins</caption>";
+           generateTableHead(admins_table,json_data["admins"]);
+           generateTable(admins_table,json_data["admins"],functional_cell);
 
       }
     };
@@ -158,10 +128,26 @@ function onLoad()
 <body onload="onLoad()">
 <?php require('public/views/top_navigation.php'); ?>
  
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+    <div class="table-responsive" >
+      <table id="users_table" class="table table-hover table-dark">
+      <caption>List of users</caption>
 
+      </table>
+    </div>
+</div>
+<div class="col-md-6">
+  
 <div class="table-responsive">
-<table id="books_table" class="table table-hover table-dark">
-</table>
+      <table id="admins_table" class="table table-hover table-dark">
+      <caption>List of admins</caption>
+
+      </table>
+      </div>
+      </div>
+</div>
 </div>
 
 </body>

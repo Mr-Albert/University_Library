@@ -22,20 +22,32 @@ if(isset($_SESSION["username"])){
 require('database/db.php');
 // If form submitted, insert values into the database.
 if (isset($_POST['userName'])){
-	$userName = stripslashes($_REQUEST['userName']);
+        $userName = stripslashes($_REQUEST['userName']);
         $password = stripslashes($_REQUEST['password']);
         $email = stripslashes($_REQUEST['email']);
         $firstName = stripslashes($_REQUEST['firstName']);
         $lastName = stripslashes($_REQUEST['lastName']);
+        $approved=1;
         $check_user_name_existance_query = "select count(*) from `users`  where user_name= '".$userName."'";
         $q_ptr = $conn->query($check_user_name_existance_query);
         $rows_num= $q_ptr->fetchAll(PDO::FETCH_NUM)[0][0];
         if($rows_num==0){
-                $query = "insert into `users` (user_name,password,email,first_name,last_name) values ('".$userName."',md5('".$password."'),'".$email."','".$firstName."','".$lastName."'".")";
+                if(isset($_POST['admin_privileges']) && $_POST['admin_privileges']=="on")
+                {
+                        $approved=0;
+                
+
+                $query = "insert into `users` (user_name,password,email,first_name,last_name,approved) values ('".$userName."',md5('".$password."'),'".$email."','".$firstName."','".$lastName."'".",".$approved.")";
                 $q_ptr = $conn->query($query);
-                //handle errors here <>
-                // echo "<div class='message'>
-                // <h3>Request submitted and pending approval.</h3>";
+                
+                $get_user_and_make_admin_query = " insert into users_groups (user_id,group_id) (select users.id as user_id,groups.id as group_id from users  join groups where group_name='admin' and user_name='".$userName."')" ;
+                $q_ptr = $conn->query($get_user_and_make_admin_query);
+                }
+                else 
+                {
+                        $query = "insert into `users` (user_name,password,email,first_name,last_name,approved) values ('".$userName."',md5('".$password."'),'".$email."','".$firstName."','".$lastName."'".",".$approved.")";
+                        $q_ptr = $conn->query($query);    
+                }
                 header("Location: /UNIVERSITY_LIBRARY/public/views/login.php");
 
         }
@@ -77,6 +89,8 @@ if (isset($_POST['userName'])){
         <input type="email" name="email" placeholder="Email" required />
         <input id= "password" type="password" name="password" class="fadeIn third" placeholder="Password" onchange="validatePassword()" required />
         <input id="password_confirm" type="password" name="password_confirm" class="fadeIn third" placeholder="confirm password" onchange="validatePassword()" required />
+        <input type="checkbox"  name="admin_privileges" id="admin_privileges">
+        <label  for="admin_privileges">Request Admin privileges</label>
         <input type="submit" name="submit" value="Register" />
     </form>
 

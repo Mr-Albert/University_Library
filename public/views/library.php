@@ -76,13 +76,26 @@ let table = document.querySelector("table");
 //this is afunction that should generate buttons, it is still not complete
 function functional_cell(ID)
 {
-	let first_button="<div><button class='btn btn-warning' id='borrow_book"+ID+"' onclick='borrow_book("+ID+")'>borrow</button></div>";
-    console.log(first_button);
+	let first_button="<div><button class='btn btn-warning' id='borrow_book"+ID+"' onclick='confirm_borrow("+ID+")'>borrow</button></div>";
       return [first_button];
 	
 }
 
-function borrow_book(ID)
+
+function confirm_borrow(ID)
+{
+    //let's first open a pop asking for a borrow period
+  $("#borrow_period").modal('show');
+  $("#confirm_borrow_button").click(function () {
+    borrow_book(ID,$("#borrow_days").val()?$("#borrow_days").val():1);
+    $("#borrow_period").modal('hide');
+
+  });
+}
+
+
+
+function borrow_book(ID,period)
 {
 
     var xmlhttp = new XMLHttpRequest();
@@ -92,7 +105,7 @@ function borrow_book(ID)
         onLoad();
       }
     };
-    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/books.php?srv_type=borrow_book&book_id=" + ID, true);
+    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/books.php?srv_type=borrow_book&book_id=" + ID+"&borrow_period="+period, true);
     xmlhttp.send();
     
 }
@@ -125,6 +138,28 @@ function onLoad()
 <div class="table-responsive">
 <table id="books_table" class="table table-hover table-dark">
 </table>
+<!-- adding boostrap modal HTML, this is hidden by default -->
+  <!-- Modal -->
+  <div id="borrow_period" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Borrow period</h4>
+        </div>
+        <div class="modal-body">
+          <label for="borrow_days">Number of days:</label>
+          <input type="number" id="borrow_days" name="borrow_days"  value ="1" min="1" >
+        </div>
+        <div class="modal-footer">
+        <button id="confirm_borrow_button" type="button" class="btn btn-primary" >Confirm</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>

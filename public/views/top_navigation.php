@@ -35,12 +35,13 @@
   <a href="/UNIVERSITY_LIBRARY/public/views/borrowed_books.php">Borrowed Books</a>
   
   <?php if(in_array("reg_reqs.php",$_SESSION['permissions'])){?>
-  <a href="/UNIVERSITY_LIBRARY/public/views/reg_reqs.php">Registration requests</a>
+  <a href="/UNIVERSITY_LIBRARY/public/views/reg_reqs.php">Admin registration requests</a>
   <?php } ?>
 
   <?php if(in_array("Email.php",$_SESSION['permissions'])){?>
   <a href="/UNIVERSITY_LIBRARY/public/views/Email.php">Emails</a>
   <?php } ?>
+  <a href="/UNIVERSITY_LIBRARY/index.php">Home</a>
 
 </div>
 

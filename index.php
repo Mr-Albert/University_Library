@@ -12,5 +12,6 @@ include("./app/controllers/auth.php");
 <body>
 
 <?php require('./public/views/top_navigation.php'); ?>
+<div id="home_welcome_msg" class="alert alert-success" role="alert">Welcome to the university library </div>
  </body>
 </html> 

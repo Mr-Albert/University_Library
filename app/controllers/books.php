@@ -36,7 +36,7 @@ require('database/db.php');
         echo json_encode($rows);
     break;
     case "borrow_book":
-        $query = "insert into users_borrow_books (user_id,book_id) values (".$_SESSION["userID"].",".$_GET["book_id"].");
+        $query = "insert into users_borrow_books (user_id,book_id,borrow_period) values (".$_SESSION["userID"].",".$_GET["book_id"].",".$_GET["borrow_period"].");
         update books set available_copies = (select available_copies from books where id=".$_GET["book_id"].")-1 where id=".$_GET["book_id"];
         try {
             $q_ptr = $conn->exec($query);
@@ -64,7 +64,7 @@ require('database/db.php');
     break;
     case "extend_borrow":
 
-        $query = "update users_borrow_books SET borrow_period = borrow_period+7 where book_id=".$_GET["book_id"]." and user_id=".$_SESSION["userID"];
+        $query = "update users_borrow_books SET borrow_period = borrow_period+".$_GET["extend_period"]." where book_id=".$_GET["book_id"]." and user_id=".$_SESSION["userID"];
         try {
             $q_ptr = $conn->exec($query);
             echo "SUCCESS";

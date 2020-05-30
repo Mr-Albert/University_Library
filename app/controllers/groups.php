@@ -12,32 +12,28 @@ require('database/db.php');
  switch ($_GET["srv_type"])
  {
     case "get_groups":
-        $query = "SELECT groups.id as group_id,groups.group_name, groups.description,users.id as user_id,users.user_name,permissions.id as permission_id,permissions.permission_name FROM groups
-        LEFT JOIN users_groups ON users_groups.group_id = groups.id
-        LEFT JOIN users ON users.id = users_groups.user_id
-        LEFT JOIN groups_permissions on  groups_permissions.group_id=users_groups.group_id
-        LEFT JOIN permissions on  permissions.id=groups_permissions.permission_id";
+        $query = "select users.id as user_id,user_name,first_name,last_name,last_login,email,group_id from 
+        users
+        left JOIN
+        users_groups on users.id=user_id";
         $q_ptr = $conn->query($query);
         $rows= $q_ptr->fetchAll(PDO::FETCH_ASSOC);
-        $associated_rows=array();
-        $found_users=array();
-        $found_permissions=array();
+        $normal_users=array();
+        $admins=array();
         foreach($rows as $key=>$value)
         {
-            if (!isset( $associated_rows[$value["group_id"]]))
-                $associated_rows[$value["group_id"]]=array("group_name"=>$value["group_name"],"description"=>$value["description"],"users"=>array(),"permissions"=>array());
-            
-            if(!in_array($value["user_id"], $found_users) ){
-                $associated_rows[$value["group_id"]]["users"][]=array("user_id"=>$value["user_id"],"user_name"=>$value["user_name"]);
-                $found_users[]=$value["user_id"];
-            }
+            if (isset($value["group_id"]) && !empty($value["group_id"]))
+                $admins[]=$value;
+            else 
+            {
+                $normal_users[]=$value;
 
-            if(!in_array($value["permission_id"], $found_permissions) ){
-                $associated_rows[$value["group_id"]]["permissions"][]=array("permission_id"=>$value["permission_id"],"permission_name"=>$value["permission_name"]);
-                $found_permissions[]=$value["permission_id"];
             }
         }
-        echo json_encode(array($associated_rows));
+        echo json_encode(array("users"=>$normal_users,"admins"=>$admins));
+
+
+
 
     break;
     case "remove_user_from_group":

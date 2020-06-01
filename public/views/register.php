@@ -46,7 +46,9 @@ if (isset($_POST['userName'])){
                 else 
                 {
                         $query = "insert into `users` (user_name,password,email,first_name,last_name,approved) values ('".$userName."',md5('".$password."'),'".$email."','".$firstName."','".$lastName."'".",".$approved.")";
-                        $q_ptr = $conn->query($query);    
+                        $q_ptr = $conn->query($query);           
+                        $get_user_and_make_admin_query = " insert into users_groups (user_id,group_id) (select users.id as user_id,groups.id as group_id from users  join groups where group_name='user' and user_name='".$userName."')" ;
+                        $q_ptr = $conn->query($get_user_and_make_admin_query); 
                 }
                 header("Location: /UNIVERSITY_LIBRARY/public/views/login.php");
 

@@ -27,6 +27,7 @@ function generateTableHead(table, data) {
 }
 
 function generateTable(table, data,functor) {
+  console.log(data);
 let tbody = table.createTBody();
   for (let element of data) {
     let row = tbody.insertRow();
@@ -37,11 +38,15 @@ let tbody = table.createTBody();
       cell.appendChild(text);
     }
     let extra_elements=functor(element);
-    extra_elements.forEach(element => {
-        let cell = row.insertCell();
-        cell.setAttribute("scope","row");
-        cell.innerHTML=element;
-    });
+    console.log (extra_elements);
+    if( typeof extra_elements !== 'undefined' && extra_elements.length>0)
+    {
+      extra_elements.forEach(element => {
+          let cell = row.insertCell();
+          cell.setAttribute("scope","row");
+          cell.innerHTML=element;
+      });
+    }
   }
 }
 function remove_users_from_group(group_id,user_id)
@@ -104,15 +109,21 @@ function onLoad()
        if (this.readyState == 4 && this.status == 200 &&this.responseText!=[]) {
            let json_data = JSON.parse(this.responseText);
            //users table
-           let table =document.getElementById("users_table");
-           table.innerHTML="<caption class='alert alert-light'>List of users</caption>";
-           generateTableHead(table,json_data["users"]);
-           generateTable(table,json_data["users"],functional_cell);
+           if(json_data["users"].length>0)
+           {
+            let table =document.getElementById("users_table");
+            table.innerHTML="<caption class='alert alert-light'>List of users</caption>";
+            generateTableHead(table,json_data["users"]);
+            generateTable(table,json_data["users"],functional_cell);
+           }
+           if(json_data["admins"].length>0)
+           {
            //admins table
-           let admins_table =document.getElementById("admins_table");
-           admins_table.innerHTML="<caption class='alert alert-light'>List of admins</caption>";
-           generateTableHead(admins_table,json_data["admins"]);
-           generateTable(admins_table,json_data["admins"],functional_cell);
+            let admins_table =document.getElementById("admins_table");
+            admins_table.innerHTML="<caption class='alert alert-light'>List of admins</caption>";
+            generateTableHead(admins_table,json_data["admins"]);
+            generateTable(admins_table,json_data["admins"],function(){});
+          }
 
       }
     };

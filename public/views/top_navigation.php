@@ -19,6 +19,11 @@
 <div class="topnav">
 <a href="/UNIVERSITY_LIBRARY/public/views/logout.php">log out</a>
 <a  href="/UNIVERSITY_LIBRARY/public/views/account.php">Account</a>
+
+<?php if(in_array("expired_borrows.php",$_SESSION['permissions'])){?>
+  <a href="/UNIVERSITY_LIBRARY/public/views/expired_borrows.php">Expired books borrow periods</a>
+  <?php } ?>
+
 <?php if(in_array("users.php",$_SESSION['permissions'])){?>
   <a href="/UNIVERSITY_LIBRARY/public/views/users.php">Users</a>
   <?php } ?>

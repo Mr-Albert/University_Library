@@ -12,17 +12,19 @@ require('database/db.php');
  switch ($_GET["srv_type"])
  {
     case "get_groups":
-        $query = "select users.id as user_id,user_name,first_name,last_name,last_login,email,group_id from 
+        $query = "select users.id as user_id,user_name,first_name,last_name,last_login,email,group_id,group_name from 
         users
         left JOIN
-        users_groups on users.id=user_id";
+        users_groups on users.id=user_id
+        left JOIN
+        groups on users_groups.group_id=groups.id";
         $q_ptr = $conn->query($query);
         $rows= $q_ptr->fetchAll(PDO::FETCH_ASSOC);
         $normal_users=array();
         $admins=array();
         foreach($rows as $key=>$value)
         {
-            if (isset($value["group_id"]) && !empty($value["group_id"]))
+            if (isset($value["group_name"]) && !empty($value["group_name"]) && $value["group_name"]=="admin")
                 $admins[]=$value;
             else 
             {

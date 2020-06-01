@@ -1,7 +1,7 @@
 <?php
 //include auth.php file on all secure pages
 include("app/controllers/auth.php");
-if(!in_array("users.php",$_SESSION['permissions'])){
+if(!in_array("expired_borrows.php",$_SESSION['permissions'])){
 header("Location: /UNIVERSITY_LIBRARY/index.php");
 exit();
 }
@@ -49,19 +49,16 @@ let tbody = table.createTBody();
 }
 
   
-function remove_user(ID)
+function sendEmail(userEmail,bookID)
 {
+//#TODO
+    console.log(userEmail)
+    console.log(bookID);
+}
 
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        // console.log(this.responseText);
-        onLoad();
-      }
-    };
-    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=delete_user&user_id=" + ID, true);
-    xmlhttp.send();
-    
+function functional_element(inputElement)
+{
+  return ["<button  id='send_email_to"+inputElement["email"]+"' class='btn btn-danger' onclick=\"sendEmail('"+inputElement["email"]+"','"+inputElement["name"]+"')\"> Send email </button>"];
 }
 
 
@@ -72,14 +69,14 @@ function onLoad()
        if (this.readyState == 4 && this.status == 200 &&this.responseText!=[]) {
            let json_data = JSON.parse(this.responseText);
            console.log(json_data);
-           let table =document.getElementById("users_table");
+           let table =document.getElementById("expired_borrows_table");
            table.innerHTML="";
            generateTableHead(table,json_data);
-           generateTable(table,json_data,function (){});
+           generateTable(table,json_data,functional_element);
 
       }
     };
-    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/users.php?srv_type=get_users", true);
+    xmlhttp.open("GET", "/UNIVERSITY_LIBRARY/app/controllers/expired_borrows.php?srv_type=get_users", true);
     xmlhttp.send();
     
 }
@@ -93,7 +90,7 @@ function onLoad()
  
 
 <div class="table-responsive">
-<table id="users_table" class="table table-hover table-dark">
+<table id="expired_borrows_table" class="table table-hover table-dark">
 </table>
 </div>
 
